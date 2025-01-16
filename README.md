@@ -1,3 +1,4 @@
 # utilities
-My personal utilities\n
+My personal utilities
+
 Up for grabs if you want to use them
