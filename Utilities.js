@@ -1,4 +1,4 @@
-class Utilities () {
+export class Utilities () {
   static getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
