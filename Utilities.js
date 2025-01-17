@@ -175,27 +175,14 @@ export class Utilities () {
     return Math.random() * (max - min) + min;
   } //
   
-  static rearrange() {
-    if (leader_board.shown.length <= 1) {
+  static rearrange(leader_board) {
+    if (leader_board.length <= 1) {
       return;
     }
-    leader_board.shown.sort(function (a, b) {
+    leader_board.sort(function (a, b) {
       return a.score - b.score;
     });
-    leader_board.shown.reverse(); // huh
-  }
-  
-  static confirmplayerradia(_x, _y) {
-    for (const player in players) {
-      let player_ = players[player];
-      if (
-        between(player_.x, _x - (player_.size + 50), _x + (player_.size + 50)) &&
-        between(player_.y, _y - (player_.size + 50), _y + (player_.size + 50))
-      ) {
-        return false; // Overlap detected
-      }
-    }
-    return true; // No overlap
+    leader_board.reverse(); // huh
   }
   
   static limitedLog(message, ...optionalParams) {
@@ -216,21 +203,62 @@ export class Utilities () {
     return ((angle + Math.PI) % (2 * Math.PI)) - Math.PI;
   }
   
-  static moveCannonAngle(cannon) {
-    let deltaAngle = normalizeAngle_2(cannon.targetAngle - cannon.angle);
+  static class leaderboard() {
+    constructor (leaderboardLength) {
+      this.public = []
+      this.hidden = []
+      this.leaderboardLength = leaderboardLength
+    }
+
+    addplayer(id,score,...meta) {
+      if (this.public.length <= 10) {
+        this.public.push({id:id,score:score,...meta});
+      }
+      this.hidden.push({id:id,score:score,...meta});
+    }
   
-    let reloadStat = players[cannon.playerid]?.statsTree?.["Bullet Reload"];
+    sort() {
+      this.public = this.public.sort(function (a, b) {
+        return b.score - a.score;
+      });
+      this.hidden = this.hidden.sort(function (a, b) {
+        return b.score - a.score;
+      });
+    }
   
-    let denominator = 3.5 - (reloadStat - 1) / 3;
+    addscore(id,score) {
+      let player = this.hidden.find((entre) => id === entre.id)
+      player.score += score;
+      let player2 = this.public.find((entre) => id === entre.id)
+      if (!player2) {
+        this.public.push(player)
+        this.sort()
+        this.public = this.public.slice(0, this.leaderboardLength)
+      } else {
+        player2.score += score
+        this.sort()
+        this.public = this.public.slice(0, this.leaderboardLength)
+      }
+    }
   
-    let adjustment = Math.abs(deltaAngle) / denominator;
-  
-    cannon.angle += Math.sign(deltaAngle) * adjustment;
-    cannon.angle = normalizeAngle_2(cannon.angle);
-  
-    emit("autoCannonUPDATE-ANGLE", {
-      angle: cannon.angle,
-      cannon_ID: cannon.CannonID,
-    });
+    removeplayer(id) {
+      let player = this.hidden.find((entre) => id === entre.id)
+      if (player) {
+        this.hidden = this.hidden.splice(this.hidden.indexOf(player),1)
+      }
+      let player2 = this.public.find((entre) => id === entre.id)
+      if (player2) {
+        this.public = this.public.splice(this.public.indexOf(player2),1)
+      }
+    }
+    get hidden() {
+      return this.hidden
+    }
+    get public() {
+      return this.public
+    }
+    get full() {
+      return {public:this.public,hidden:this.hidden}
+    }
   }
 }
