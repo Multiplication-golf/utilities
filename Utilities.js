@@ -160,26 +160,6 @@ export class Utilities () {
     }
   }
   
-  static isBulletCollidingWithPolygon(circle, polygonVertices) {
-    var circleSAT;
-    circleSAT = new SAT.Circle(new SAT.Vector(circle.x, circle.y), circle.size);
-    const polygonSAT = toSATPolygon(polygonVertices);
-    var collided = SAT.testCirclePolygon(circleSAT, polygonSAT);
-    return collided;
-  }
-  
-  static isPlayerCollidingWithPolygon(circle, polygonVertices) {
-    response.clear();
-  
-    let circleSAT = new SAT.Circle(
-      new SAT.Vector(circle.x, circle.y),
-      circle.size * 40
-    );
-    const polygonSAT = toSATPolygon(polygonVertices);
-    var collided = SAT.testCirclePolygon(circleSAT, polygonSAT, response);
-    return [collided, response];
-  }
-  
   static finder_(data) {
     let index___ = autocannons.findIndex(
       (cannon) => data._cannon.CannonID === cannon.CannonID
