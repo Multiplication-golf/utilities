@@ -6,7 +6,7 @@ export class Utilities () {
   }
   
   static between(x, min, max) {
-    return x >= min && x <= max;
+    return x >= min && x <= max; 
   }
   
   static MathHypotenuse(x, y) {
