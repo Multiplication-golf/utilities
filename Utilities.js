@@ -203,7 +203,7 @@ export class Utilities () {
     return ((angle + Math.PI) % (2 * Math.PI)) - Math.PI;
   }
   
-  static class leaderboard() {
+  static class leaderboard {
     constructor (leaderboardLength) {
       this.public = []
       this.hidden = []
